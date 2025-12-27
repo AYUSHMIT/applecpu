@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive demo showcasing Apple's Firestorm and Icestorm CPU microarchitectures with performance visualizations and instruction analysis.">
+    <meta name="keywords" content="Apple Silicon, M1, A14, CPU, microarchitecture, performance, ARM64, Firestorm, Icestorm">
+    <meta name="author" content="Apple CPU Research">
+    <title>Apple CPU Microarchitecture - Interactive Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍎</span>
+                <span class="brand-text">Apple CPU Research</span>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#architectures" class="nav-link">Architectures</a></li>
+                <li><a href="#explorer" class="nav-link">Explorer</a></li>
+                <li><a href="../firestorm.html" class="nav-link">Documentation</a></li>
+                <li>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="cpu-animation">
+                <div class="core firestorm-core" data-core="firestorm">
+                    <div class="core-label">🔥</div>
+                    <div class="pipeline-line"></div>
+                    <div class="pipeline-line"></div>
+                    <div class="pipeline-line"></div>
+                </div>
+                <div class="core icestorm-core" data-core="icestorm">
+                    <div class="core-label">❄️</div>
+                    <div class="pipeline-line"></div>
+                    <div class="pipeline-line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="gradient-text">Apple Silicon</span>
+                <br>Microarchitecture Research
+            </h1>
+            <p class="hero-subtitle">
+                Explore the inner workings of Apple's revolutionary M1/A14 CPU cores
+                <br>with interactive visualizations and comprehensive performance data
+            </p>
+            <div class="hero-actions">
+                <a href="#features" class="btn btn-primary">
+                    <span>Explore Features</span>
+                    <span class="btn-arrow">→</span>
+                </a>
+                <a href="explorer.html" class="btn btn-secondary">
+                    <span>Instruction Explorer</span>
+                    <span class="btn-arrow">🔍</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value">35k+</div>
+                    <div class="stat-label">Measurements</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Architectures</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1000s</div>
+                    <div class="stat-label">Instructions</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-subtitle">Comprehensive tools for exploring CPU microarchitecture</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Instruction Analysis</h3>
+                    <p class="feature-description">
+                        Detailed latency and throughput measurements for thousands of ARM64 instructions with real hardware data from Apple Silicon.
+                    </p>
+                    <a href="explorer.html" class="feature-link">Explore Instructions →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Performance Metrics</h3>
+                    <p class="feature-description">
+                        Real performance counter measurements showing execution unit usage, pipeline behavior, and instruction fusion patterns.
+                    </p>
+                    <a href="visualizer.html" class="feature-link">View Visualizations →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3 class="feature-title">Architecture Deep Dive</h3>
+                    <p class="feature-description">
+                        In-depth documentation of Firestorm and Icestorm cores including pipeline structure, execution units, and reorder buffer.
+                    </p>
+                    <a href="#architectures" class="feature-link">Learn More →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Interactive Comparison</h3>
+                    <p class="feature-description">
+                        Side-by-side comparisons of P-core and E-core performance characteristics with visual indicators and sortable tables.
+                    </p>
+                    <a href="explorer.html" class="feature-link">Compare Now →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Visual Documentation</h3>
+                    <p class="feature-description">
+                        Beautiful, responsive interface with dark mode support, animations, and intuitive navigation for all devices.
+                    </p>
+                    <a href="#architectures" class="feature-link">Explore Design →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Data Visualization</h3>
+                    <p class="feature-description">
+                        Dynamic charts and graphs showing performance trends, instruction categories, and execution unit distribution.
+                    </p>
+                    <a href="visualizer.html" class="feature-link">View Charts →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architectures Section -->
+    <section class="architectures" id="architectures">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">CPU Architectures</h2>
+                <p class="section-subtitle">Compare Firestorm and Icestorm microarchitectures</p>
+            </div>
+            
+            <div class="arch-tabs">
+                <button class="arch-tab active" data-arch="firestorm">
+                    <span class="tab-icon">🔥</span>
+                    <span class="tab-text">Firestorm</span>
+                    <span class="tab-subtitle">P-Core</span>
+                </button>
+                <button class="arch-tab" data-arch="icestorm">
+                    <span class="tab-icon">❄️</span>
+                    <span class="tab-text">Icestorm</span>
+                    <span class="tab-subtitle">E-Core</span>
+                </button>
+                <button class="arch-tab" data-arch="comparison">
+                    <span class="tab-icon">⚖️</span>
+                    <span class="tab-text">Comparison</span>
+                    <span class="tab-subtitle">Side-by-side</span>
+                </button>
+            </div>
+
+            <div class="arch-content">
+                <!-- Firestorm Content -->
+                <div class="arch-panel active" id="firestorm-panel">
+                    <div class="arch-header firestorm-gradient">
+                        <h3>🔥 Firestorm - High Performance Core</h3>
+                        <p>Designed for maximum single-threaded performance</p>
+                    </div>
+                    <div class="arch-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Pipeline Width</div>
+                                <div class="detail-value">8 uops/cycle</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Integer Units</div>
+                                <div class="detail-value">6 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Load/Store Units</div>
+                                <div class="detail-value">4 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">SIMD/FP Units</div>
+                                <div class="detail-value">4 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">ROB Size</div>
+                                <div class="detail-value">~330 entries</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">In-flight Renames</div>
+                                <div class="detail-value">~623</div>
+                            </div>
+                        </div>
+                        <div class="arch-description">
+                            <h4>Key Features</h4>
+                            <ul>
+                                <li>Advanced out-of-order execution with 8-wide pipeline</li>
+                                <li>14 total execution units for parallel instruction processing</li>
+                                <li>Large reorder buffer for deep instruction window</li>
+                                <li>Sophisticated instruction fusion (adds+branch, AES+EOR, etc.)</li>
+                                <li>Zero-cycle register moves via renaming</li>
+                                <li>Up to 11 issues per cycle in optimal conditions</li>
+                            </ul>
+                        </div>
+                        <div class="arch-actions">
+                            <a href="../firestorm.html" class="btn btn-outline">View Full Documentation</a>
+                            <a href="../firestorm-int.html" class="btn btn-outline">Base Instructions</a>
+                            <a href="../firestorm-simd.html" class="btn btn-outline">SIMD Instructions</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Icestorm Content -->
+                <div class="arch-panel" id="icestorm-panel">
+                    <div class="arch-header icestorm-gradient">
+                        <h3>❄️ Icestorm - High Efficiency Core</h3>
+                        <p>Optimized for power efficiency and background tasks</p>
+                    </div>
+                    <div class="arch-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Pipeline Width</div>
+                                <div class="detail-value">4 uops/cycle</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Integer Units</div>
+                                <div class="detail-value">3 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Load/Store Units</div>
+                                <div class="detail-value">2 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">SIMD/FP Units</div>
+                                <div class="detail-value">2 units</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">ROB Size</div>
+                                <div class="detail-value">~60 entries</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">In-flight Renames</div>
+                                <div class="detail-value">~111</div>
+                            </div>
+                        </div>
+                        <div class="arch-description">
+                            <h4>Key Features</h4>
+                            <ul>
+                                <li>Efficient 4-wide pipeline balanced for power and performance</li>
+                                <li>7 total execution units with smart resource allocation</li>
+                                <li>Compact reorder buffer for reduced power consumption</li>
+                                <li>Instruction fusion including unique MOVZ+MOVK elimination</li>
+                                <li>ADR/ADRP elimination for address generation</li>
+                                <li>Optimized for sustained throughput at low power</li>
+                            </ul>
+                        </div>
+                        <div class="arch-actions">
+                            <a href="../icestorm.html" class="btn btn-outline">View Full Documentation</a>
+                            <a href="../icestorm-int.html" class="btn btn-outline">Base Instructions</a>
+                            <a href="../icestorm-simd.html" class="btn btn-outline">SIMD Instructions</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Content -->
+                <div class="arch-panel" id="comparison-panel">
+                    <div class="arch-header comparison-gradient">
+                        <h3>⚖️ Architecture Comparison</h3>
+                        <p>Firestorm vs Icestorm side-by-side</p>
+                    </div>
+                    <div class="comparison-table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th class="firestorm-col">🔥 Firestorm</th>
+                                    <th class="icestorm-col">❄️ Icestorm</th>
+                                    <th>Ratio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pipeline Width</td>
+                                    <td class="firestorm-col">8 uops/cycle</td>
+                                    <td class="icestorm-col">4 uops/cycle</td>
+                                    <td>2.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>Integer Units</td>
+                                    <td class="firestorm-col">6</td>
+                                    <td class="icestorm-col">3</td>
+                                    <td>2.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>Load/Store Units</td>
+                                    <td class="firestorm-col">4</td>
+                                    <td class="icestorm-col">2</td>
+                                    <td>2.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>SIMD/FP Units</td>
+                                    <td class="firestorm-col">4</td>
+                                    <td class="icestorm-col">2</td>
+                                    <td>2.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Execution Units</td>
+                                    <td class="firestorm-col">14</td>
+                                    <td class="icestorm-col">7</td>
+                                    <td>2.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>ROB (Coalesced)</td>
+                                    <td class="firestorm-col">~330 entries</td>
+                                    <td class="icestorm-col">~60 entries</td>
+                                    <td>5.5×</td>
+                                </tr>
+                                <tr>
+                                    <td>In-flight Renames</td>
+                                    <td class="firestorm-col">~623</td>
+                                    <td class="icestorm-col">~111</td>
+                                    <td>5.6×</td>
+                                </tr>
+                                <tr>
+                                    <td>Int Register File</td>
+                                    <td class="firestorm-col">~380-394</td>
+                                    <td class="icestorm-col">~79</td>
+                                    <td>4.9×</td>
+                                </tr>
+                                <tr>
+                                    <td>FP/SIMD Register File</td>
+                                    <td class="firestorm-col">~432</td>
+                                    <td class="icestorm-col">~87</td>
+                                    <td>5.0×</td>
+                                </tr>
+                                <tr>
+                                    <td>In-flight Loads</td>
+                                    <td class="firestorm-col">~130</td>
+                                    <td class="icestorm-col">30</td>
+                                    <td>4.3×</td>
+                                </tr>
+                                <tr>
+                                    <td>In-flight Stores</td>
+                                    <td class="firestorm-col">~60</td>
+                                    <td class="icestorm-col">18</td>
+                                    <td>3.3×</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="comparison-notes">
+                        <h4>Performance Characteristics</h4>
+                        <p>
+                            Firestorm delivers approximately 2× the execution throughput of Icestorm with 
+                            significantly larger out-of-order windows. However, Icestorm achieves impressive 
+                            efficiency through smart design choices like instruction elimination and fusion, 
+                            making it ideal for background tasks and power-constrained scenarios.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explorer Preview Section -->
+    <section class="explorer-preview" id="explorer">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Instruction Explorer</h2>
+                <p class="section-subtitle">Search, filter, and compare thousands of ARM64 instructions</p>
+            </div>
+            <div class="preview-content">
+                <div class="preview-image">
+                    <div class="browser-mockup">
+                        <div class="browser-header">
+                            <div class="browser-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="browser-title">Instruction Explorer</div>
+                        </div>
+                        <div class="browser-content">
+                            <div class="mockup-search">
+                                <span class="search-icon">🔍</span>
+                                <span class="search-text">Search instructions...</span>
+                            </div>
+                            <div class="mockup-table">
+                                <div class="mockup-row header">
+                                    <span>Instruction</span>
+                                    <span>Latency</span>
+                                    <span>Throughput</span>
+                                    <span>Units</span>
+                                </div>
+                                <div class="mockup-row">
+                                    <span>ADD (register)</span>
+                                    <span>1 cycle</span>
+                                    <span>0.167</span>
+                                    <span>u1-6</span>
+                                </div>
+                                <div class="mockup-row">
+                                    <span>MUL</span>
+                                    <span>3 cycles</span>
+                                    <span>0.5</span>
+                                    <span>u5-6</span>
+                                </div>
+                                <div class="mockup-row">
+                                    <span>LDR</span>
+                                    <span>4 cycles</span>
+                                    <span>0.25</span>
+                                    <span>u8-10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-features">
+                    <h3>Powerful Search & Analysis</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon-small">🔍</span>
+                            <div>
+                                <strong>Advanced Filtering</strong>
+                                <p>Search by instruction name, category, or performance characteristics</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">📊</span>
+                            <div>
+                                <strong>Sortable Columns</strong>
+                                <p>Sort by latency, throughput, or execution units</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">⚡</span>
+                            <div>
+                                <strong>Real-time Comparison</strong>
+                                <p>Compare Firestorm and Icestorm side-by-side</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon-small">📈</span>
+                            <div>
+                                <strong>Visual Indicators</strong>
+                                <p>Color-coded performance metrics for quick analysis</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <a href="explorer.html" class="btn btn-primary btn-large">
+                        <span>Launch Explorer</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Dive Deeper?</h2>
+                <p class="cta-subtitle">
+                    Explore comprehensive documentation and measurements for Apple's M1/A14 CPU cores
+                </p>
+                <div class="cta-actions">
+                    <a href="explorer.html" class="btn btn-primary btn-large">
+                        <span>Start Exploring</span>
+                        <span class="btn-arrow">🚀</span>
+                    </a>
+                    <a href="../firestorm.html" class="btn btn-secondary btn-large">
+                        <span>View Documentation</span>
+                        <span class="btn-arrow">📚</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About</h4>
+                    <p>
+                        Microarchitecture research documenting Apple's Firestorm and Icestorm CPU cores
+                        through comprehensive performance measurements.
+                    </p>
+                    <p class="credit">
+                        Original research by <a href="https://twitter.com/dougallj" target="_blank">Dougall Johnson</a>
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="../firestorm.html">Firestorm Overview</a></li>
+                        <li><a href="../icestorm.html">Icestorm Overview</a></li>
+                        <li><a href="explorer.html">Instruction Explorer</a></li>
+                        <li><a href="visualizer.html">Performance Visualizer</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="../firestorm-int.html">Base Instructions</a></li>
+                        <li><a href="../firestorm-simd.html">SIMD Instructions</a></li>
+                        <li><a href="https://github.com/AYUSHMIT/applecpu" target="_blank">GitHub Repository</a></li>
+                        <li><a href="README.md">Demo Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Acknowledgments</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://uops.info/" target="_blank">Andreas Abel</a></li>
+                        <li><a href="https://www.anandtech.com/" target="_blank">Andrei Frumusanu</a></li>
+                        <li><a href="https://agner.org/optimize/" target="_blank">Agner Fog</a></li>
+                        <li><a href="https://twitter.com/handleym99" target="_blank">Maynard Handley</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Apple CPU Microarchitecture Research. Educational purposes only.</p>
+                <p>Made with ❤️ for CPU architecture enthusiasts</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
