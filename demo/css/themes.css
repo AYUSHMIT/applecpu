@@ -1,0 +1,80 @@
+/* ============================================
+   Theme Variations - Apple CPU Research Demo
+   ============================================ */
+
+/* Additional theme color schemes and variations */
+
+/* High Contrast Mode */
+body.high-contrast {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --border-color: #666666;
+}
+
+/* Firestorm Theme */
+body.theme-firestorm {
+    --accent-primary: #ff6b35;
+    --accent-secondary: #f7931e;
+    --accent-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+}
+
+body.theme-firestorm .hero-background {
+    background: var(--firestorm-gradient);
+    opacity: 0.08;
+}
+
+/* Icestorm Theme */
+body.theme-icestorm {
+    --accent-primary: #00b4d8;
+    --accent-secondary: #90e0ef;
+    --accent-gradient: linear-gradient(135deg, #00b4d8 0%, #90e0ef 100%);
+}
+
+body.theme-icestorm .hero-background {
+    background: var(--icestorm-gradient);
+    opacity: 0.08;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .theme-toggle,
+    .nav-toggle,
+    .hero-background,
+    .cpu-animation,
+    .cta,
+    .footer {
+        display: none;
+    }
+    
+    body {
+        color: #000;
+        background: #fff;
+    }
+    
+    a {
+        text-decoration: underline;
+    }
+    
+    .hero {
+        margin-top: 0;
+        min-height: auto;
+        padding: 2rem 1rem;
+    }
+}
