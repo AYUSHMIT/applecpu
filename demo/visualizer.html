@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Performance visualizer for Apple Silicon - interactive charts comparing Firestorm and Icestorm">
+    <title>Performance Visualizer - Apple CPU Research</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <style>
+        .visualizer-container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 0 var(--spacing-lg) var(--spacing-3xl);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .chart-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-xl);
+            transition: transform var(--transition-base);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .chart-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .chart-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 300px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+
+        .chart-controls {
+            background: var(--bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .control-group {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .control-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+        }
+
+        .control-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .control-btn:hover:not(.active) {
+            background: var(--bg-tertiary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .stat-card.firestorm {
+            border-left-color: var(--firestorm-primary);
+        }
+
+        .stat-card.icestorm {
+            border-left-color: var(--icestorm-primary);
+        }
+
+        .stat-card-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .legend {
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: center;
+            margin-top: var(--spacing-lg);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-sm);
+        }
+
+        .legend-color.firestorm {
+            background: var(--firestorm-gradient);
+        }
+
+        .legend-color.icestorm {
+            background: var(--icestorm-gradient);
+        }
+
+        /* Simple bar chart styles */
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .bar-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .bar-container {
+            display: flex;
+            gap: var(--spacing-xs);
+            align-items: center;
+        }
+
+        .bar {
+            height: 30px;
+            border-radius: var(--radius-sm);
+            transition: width var(--transition-slow);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-sm);
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .bar.firestorm {
+            background: var(--firestorm-gradient);
+        }
+
+        .bar.icestorm {
+            background: var(--icestorm-gradient);
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bar-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍎</span>
+                <span class="brand-text">Apple CPU Research</span>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="explorer.html" class="nav-link">Explorer</a></li>
+                <li><a href="visualizer.html" class="nav-link active">Visualizer</a></li>
+                <li><a href="../firestorm.html" class="nav-link">Documentation</a></li>
+                <li>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="visualizer-container">
+        <div class="explorer-header">
+            <h1 class="explorer-title">
+                <span class="gradient-text">Performance Visualizer</span>
+            </h1>
+            <p class="section-subtitle">
+                Interactive charts comparing Firestorm and Icestorm performance characteristics
+            </p>
+        </div>
+
+        <!-- Architecture Stats -->
+        <div class="stats-grid">
+            <div class="stat-card firestorm">
+                <div class="stat-card-title">🔥 Firestorm</div>
+                <div class="stat-card-value">8</div>
+                <div class="stat-card-label">uops/cycle pipeline width</div>
+            </div>
+            <div class="stat-card icestorm">
+                <div class="stat-card-title">❄️ Icestorm</div>
+                <div class="stat-card-value">4</div>
+                <div class="stat-card-label">uops/cycle pipeline width</div>
+            </div>
+            <div class="stat-card firestorm">
+                <div class="stat-card-title">🔥 Execution Units</div>
+                <div class="stat-card-value">14</div>
+                <div class="stat-card-label">6 Int + 4 Mem + 4 SIMD</div>
+            </div>
+            <div class="stat-card icestorm">
+                <div class="stat-card-title">❄️ Execution Units</div>
+                <div class="stat-card-value">7</div>
+                <div class="stat-card-label">3 Int + 2 Mem + 2 SIMD</div>
+            </div>
+        </div>
+
+        <!-- Chart Controls -->
+        <div class="chart-controls">
+            <div class="control-group">
+                <span class="control-label">Category:</span>
+                <div class="control-buttons">
+                    <button class="control-btn active" data-category="all">All</button>
+                    <button class="control-btn" data-category="integer">Integer</button>
+                    <button class="control-btn" data-category="simd">SIMD/FP</button>
+                    <button class="control-btn" data-category="load-store">Load/Store</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Pipeline Width Comparison -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Pipeline Width</h3>
+                    <p class="chart-description">Maximum instructions per cycle</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">8 uops/cycle</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 50%;">4 uops/cycle</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Execution Units -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Execution Units</h3>
+                    <p class="chart-description">Total execution unit count</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">14 units</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 50%;">7 units</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROB Size -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reorder Buffer Size</h3>
+                    <p class="chart-description">Out-of-order execution window</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">~330 entries</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 18%;">~60 entries</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register File Size -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Integer Register File</h3>
+                    <p class="chart-description">Physical register count</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">~387 registers</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 20%;">~79 registers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Latency -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Average Instruction Latency</h3>
+                    <p class="chart-description">Mean latency across common instructions</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 60%;">2.5 cycles</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 64%;">2.7 cycles</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load/Store Buffers -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Load/Store Buffers</h3>
+                    <p class="chart-description">In-flight memory operations</p>
+                </div>
+                <div class="chart-canvas">
+                    <div class="bar-chart" style="width: 100%;">
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm Loads</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">~130</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm Loads</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 23%;">~30</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Firestorm Stores</div>
+                            <div class="bar-container">
+                                <div class="bar firestorm" style="width: 100%;">~60</div>
+                            </div>
+                        </div>
+                        <div class="bar-row">
+                            <div class="bar-label">Icestorm Stores</div>
+                            <div class="bar-container">
+                                <div class="bar icestorm" style="width: 30%;">~18</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instruction Performance Comparison -->
+        <div class="chart-card" style="margin-bottom: var(--spacing-xl);">
+            <div class="chart-header">
+                <h3 class="chart-title">Common Instruction Performance</h3>
+                <p class="chart-description">Latency comparison for frequently used instructions</p>
+            </div>
+            <div class="chart-canvas" style="height: auto;">
+                <div id="instructionComparisonChart" class="bar-chart" style="width: 100%;"></div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color firestorm"></div>
+                    <span>Firestorm</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color icestorm"></div>
+                    <span>Icestorm</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Insights -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Performance Insights</h3>
+            </div>
+            <div style="padding: var(--spacing-lg); color: var(--text-secondary); line-height: 1.8;">
+                <ul style="list-style-position: inside;">
+                    <li><strong>Pipeline Width:</strong> Firestorm's 8-wide pipeline is 2× wider than Icestorm, enabling higher instruction throughput.</li>
+                    <li><strong>Out-of-Order Window:</strong> Firestorm's ~330 entry ROB is 5.5× larger, allowing deeper speculation and better handling of long-latency operations.</li>
+                    <li><strong>Execution Resources:</strong> Firestorm has 2× the execution units, providing parallel execution capabilities for complex workloads.</li>
+                    <li><strong>Memory Operations:</strong> Firestorm supports 4.3× more in-flight loads and 3.3× more stores, crucial for memory-intensive tasks.</li>
+                    <li><strong>Register Files:</strong> Firestorm's larger register files (~5× for integer) reduce register pressure in complex code.</li>
+                    <li><strong>Latency:</strong> Both cores have similar instruction latencies, with Firestorm optimizing for throughput and Icestorm for efficiency.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/data-parser.js"></script>
+    <script src="js/visualizer.js"></script>
+</body>
+</html>
